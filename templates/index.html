@@ -1,0 +1,237 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Student Performance Predictor</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<div class="container py-5">
+
+    <div class="main-card">
+
+        <div class="text-center mb-4">
+            <h1>🎓 Student Performance Predictor</h1>
+
+            <p class="text-muted">
+                Predict student academic performance using Machine Learning
+            </p>
+        </div>
+
+        <form action="/predict" method="POST">
+
+            <h4>Personal Information</h4>
+
+            <div class="row g-3">
+
+                <div class="col-md-4">
+                    <label>School</label>
+                    <select name="school" class="form-select">
+                        <option value="GP">GP</option>
+                        <option value="MS">MS</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label>Gender</label>
+                    <select name="sex" class="form-select">
+                        <option value="F">Female</option>
+                        <option value="M">Male</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label>Age</label>
+                    <input type="number" name="age"
+                           min="15" max="22"
+                           value="17" class="form-control" required>
+                </div>
+
+                <div class="col-md-4">
+                    <label>Address</label>
+                    <select name="address" class="form-select">
+                        <option value="U">Urban</option>
+                        <option value="R">Rural</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label>Family Size</label>
+                    <select name="famsize" class="form-select">
+                        <option value="GT3">Greater than 3</option>
+                        <option value="LE3">3 or less</option>
+                    </select>
+                </div>
+
+                <div class="col-md-4">
+                    <label>Parent Status</label>
+                    <select name="Pstatus" class="form-select">
+                        <option value="T">Together</option>
+                        <option value="A">Apart</option>
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label>Mother's Education (0-4)</label>
+                    <select name="Medu" class="form-select">
+                        {% for i in range(5) %}
+                        <option value="{{ i }}">{{ i }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label>Father's Education (0-4)</label>
+                    <select name="Fedu" class="form-select">
+                        {% for i in range(5) %}
+                        <option value="{{ i }}">{{ i }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label>Mother's Job</label>
+                    <select name="Mjob" class="form-select">
+                        {% for v in ['teacher','health','services','at_home','other'] %}
+                        <option value="{{ v }}">{{ v }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label>Father's Job</label>
+                    <select name="Fjob" class="form-select">
+                        {% for v in ['teacher','health','services','at_home','other'] %}
+                        <option value="{{ v }}">{{ v }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label>Reason for School Choice</label>
+                    <select name="reason" class="form-select">
+                        {% for v in ['home','reputation','course','other'] %}
+                        <option value="{{ v }}">{{ v }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-6">
+                    <label>Guardian</label>
+                    <select name="guardian" class="form-select">
+                        {% for v in ['mother','father','other'] %}
+                        <option value="{{ v }}">{{ v }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+            </div>
+
+            <hr class="my-4">
+
+            <h4>Academic Information</h4>
+
+            <div class="row g-3">
+
+                {% for name, label, minimum, maximum, default in [
+                    ('traveltime','Travel Time',1,4,2),
+                    ('studytime','Weekly Study Time',1,4,2),
+                    ('failures','Past Failures',0,4,0),
+                    ('absences','Absences',0,100,2),
+                    ('G1','First Period Grade',0,20,10),
+                    ('G2','Second Period Grade',0,20,10)
+                ] %}
+                <div class="col-md-4">
+                    <label>{{ label }}</label>
+                    <input type="number" name="{{ name }}"
+                           min="{{ minimum }}" max="{{ maximum }}"
+                           value="{{ default }}"
+                           class="form-control" required>
+                </div>
+                {% endfor %}
+
+            </div>
+
+            <hr class="my-4">
+
+            <h4>Additional Information</h4>
+
+            <div class="row g-3">
+
+                {% for name, label in [
+                    ('schoolsup','School Support'),
+                    ('famsup','Family Support'),
+                    ('paid','Extra Paid Classes'),
+                    ('activities','Extra Activities'),
+                    ('nursery','Nursery Attendance'),
+                    ('higher','Higher Education'),
+                    ('internet','Internet Access'),
+                    ('romantic','Romantic Relationship')
+                ] %}
+
+                <div class="col-md-6">
+                    <label>{{ label }}</label>
+                    <select name="{{ name }}" class="form-select">
+                        <option value="yes">Yes</option>
+                        <option value="no">No</option>
+                    </select>
+                </div>
+
+                {% endfor %}
+
+                {% for name, label in [
+                    ('famrel','Family Relationship'),
+                    ('freetime','Free Time'),
+                    ('goout','Going Out'),
+                    ('Dalc','Workday Alcohol Consumption'),
+                    ('Walc','Weekend Alcohol Consumption'),
+                    ('health','Health')
+                ] %}
+
+                <div class="col-md-6">
+                    <label>{{ label }} (1-5)</label>
+                    <input type="number" name="{{ name }}"
+                           min="1" max="5" value="3"
+                           class="form-control" required>
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 mt-4">
+                Predict Final Grade
+            </button>
+
+        </form>
+
+        {% if prediction is defined %}
+        <div class="result-box mt-4 text-center">
+            <h4>Predicted Final Grade</h4>
+            <h1>{{ prediction }} / 20</h1>
+            <p>Estimated academic score based on the trained model.</p>
+        </div>
+        {% endif %}
+
+        {% if error %}
+        <div class="alert alert-danger mt-4">
+            {{ error }}
+        </div>
+        {% endif %}
+
+    </div>
+
+</div>
+
+</body>
+</html>
